@@ -9,10 +9,10 @@ export default class QuestionForm extends React.Component {
     constructor(props){
         super(props);
         this.state={
-            questionNum:0,
-            question:"",
-            answer:"",
-            arHints:[],
+            questionNum:(this.props.mode=="del" || this.props.mode=="update") && this.props.chosenItem.val ? this.props.chosenItem.val.questionNum : "0",
+            question:(this.props.mode=="del" || this.props.mode=="update") && this.props.chosenItem.val ? this.props.chosenItem.val.question : "",
+            answer:(this.props.mode=="del" || this.props.mode=="update") && this.props.chosenItem.val ? this.props.chosenItem.val.answer : "",
+            arHints:(this.props.mode=="del" || this.props.mode=="update") && this.props.chosenItem.val  && this.props.chosenItem.val.hints ? this.props.chosenItem.val.hints : [],
         }
         this.setValue=this.setValue.bind(this);
         this.submitForm=this.submitForm.bind(this);
@@ -22,7 +22,7 @@ export default class QuestionForm extends React.Component {
     render(){
         const hints = this.state.arHints.map((itm,ii)=>{
             return (
-                <InputItem className="inputItem" caption="רמז" value={this.state.arHints[ii]} onValueChange={this.setValue} index={ii}/>
+                <InputItem className="inputItem" size="big" caption="רמז" value={this.state.arHints[ii]} onValueChange={this.setValue} index={ii}/>
             )
         });
         let hdr;
@@ -44,11 +44,11 @@ export default class QuestionForm extends React.Component {
                     <fieldset className="questionSegment">
                         <legend>שדות למילוי</legend>
                         <InputItem className="inputItem" caption="מספר שאלה" value={this.state.questionNum} onValueChange={this.setValue}/> 
-                        <InputItem className="inputItem" caption="שאלה" value={this.state.question} onValueChange={this.setValue}/> 
-                        <InputItem className="inputItem" caption="תשובה" value={this.state.answer} onValueChange={this.setValue}/> 
+                        <InputItem className="inputItem" size="big" caption="שאלה" value={this.state.question} onValueChange={this.setValue}/> 
+                        <InputItem className="inputItem" size="big" caption="תשובה" value={this.state.answer} onValueChange={this.setValue}/> 
                         {hints}
-                        <button className="btn" onClick={this.submitForm}>שמור שאלה</button>
-                        <button className="btn" onClick={this.addHint}>הוסף רמז</button>
+                        <button className="btn" onClick={this.submitForm}>{this.props.mode==="del" ? "מחיקת שאלה" : "שמירת שאלה"}</button>
+                        {this.props.mode!="del" && <button className="btn" onClick={this.addHint}>הוסף רמז</button>}
                         <button className="btn" onClick={this.cancel}>ביטול</button>
                     </fieldset>
                 </form>
@@ -83,8 +83,20 @@ export default class QuestionForm extends React.Component {
     }
     submitForm(e){
         e.preventDefault();
-        database.ref("questions").push({questionNum:this.state.questionNum,question:this.state.question,answer:this.state.answer,hints:this.state.arHints});
-        alert ("השאלה התווספה בהצלחה");
+        switch (this.props.mode){
+            case "add":
+                database.ref("questions").push({questionNum:this.state.questionNum,question:this.state.question,answer:this.state.answer,hints:this.state.arHints});
+                alert ("השאלה התווספה בהצלחה");
+                break;
+            case "update":
+                database.ref("questions/"+this.props.chosenItem.key).update({questionNum:this.state.questionNum,question:this.state.question,answer:this.state.answer,hints:this.state.arHints});
+                alert ("השאלה נערכה בהצלחה");
+                break;
+            case "del":
+                database.ref("questions/"+this.props.chosenItem.key).remove();
+                alert ("השאלה נמחקה בהצלחה");
+                break;
+        }
         this.props.setAppState("show");
     }
     addHint(e){

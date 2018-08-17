@@ -28,7 +28,6 @@ export default class QuestionsList extends React.Component {
         this.props.setAppState("add");
     }
     update(){
-        alert (document.querySelector(".marked").getAttribute("data-key"));
         this.props.setAppState("update");
     }
     del(){

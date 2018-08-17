@@ -18,10 +18,11 @@ export default class App extends Component {
         super(props);
         this.state = {
             mode:"show",
-            arItms:[]
+            arItms:[],
         }
         this.setAppState=this.setAppState.bind(this);
-    }
+        this.getChosenItemData=this.getChosenItemData.bind(this);
+   }
     componentDidMount(){
         this.loadData("show");
     }
@@ -51,7 +52,7 @@ export default class App extends Component {
 */
         return (
             <div>
-                {this.state.mode!="show"  && <QuestionForm setAppState={this.setAppState} mode={this.state.mode}/>}
+                {this.state.mode!="show"  && <QuestionForm setAppState={this.setAppState} mode={this.state.mode} chosenItem={this.getChosenItemData()}/>}
                 {this.state.mode==="show" && <QuestionsList data={this.state.arItms} setAppState={this.setAppState}/> }
             </div>
         )
@@ -63,5 +64,23 @@ export default class App extends Component {
         else{
             this.setState({mode});
         }
+    }
+    getChosenItemData(){
+        var jItm={};
+        if (document.querySelector(".marked")){
+            jItm=this.getItmByKey(document.querySelector(".marked").getAttribute("data-key"));
+
+        }
+        return jItm;
+    }
+    getItmByKey(key){
+        var jItm={};
+        this.state.arItms.forEach((itm,ii)=>{
+            if (itm.key===key){
+                jItm=itm;
+                return false;
+            }
+        });
+        return jItm;
     }
 }
