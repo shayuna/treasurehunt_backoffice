@@ -52,7 +52,7 @@ export default class App extends Component {
 */
         return (
             <div>
-                {this.state.mode!="show"  && <QuestionForm setAppState={this.setAppState} mode={this.state.mode} chosenItem={this.getChosenItemData()}/>}
+                {this.state.mode!=="show"  && <QuestionForm setAppState={this.setAppState} mode={this.state.mode} chosenItem={this.getChosenItemData()}/>}
                 {this.state.mode==="show" && <QuestionsList data={this.state.arItms} setAppState={this.setAppState}/> }
             </div>
         )

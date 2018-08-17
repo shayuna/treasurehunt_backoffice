@@ -9,10 +9,10 @@ export default class QuestionForm extends React.Component {
     constructor(props){
         super(props);
         this.state={
-            questionNum:(this.props.mode=="del" || this.props.mode=="update") && this.props.chosenItem.val ? this.props.chosenItem.val.questionNum : "0",
-            question:(this.props.mode=="del" || this.props.mode=="update") && this.props.chosenItem.val ? this.props.chosenItem.val.question : "",
-            answer:(this.props.mode=="del" || this.props.mode=="update") && this.props.chosenItem.val ? this.props.chosenItem.val.answer : "",
-            arHints:(this.props.mode=="del" || this.props.mode=="update") && this.props.chosenItem.val  && this.props.chosenItem.val.hints ? this.props.chosenItem.val.hints : [],
+            questionNum:(this.props.mode==="del" || this.props.mode==="update") && this.props.chosenItem.val ? this.props.chosenItem.val.questionNum : "0",
+            question:(this.props.mode==="del" || this.props.mode==="update") && this.props.chosenItem.val ? this.props.chosenItem.val.question : "",
+            answer:(this.props.mode==="del" || this.props.mode==="update") && this.props.chosenItem.val ? this.props.chosenItem.val.answer : "",
+            arHints:(this.props.mode==="del" || this.props.mode==="update") && this.props.chosenItem.val  && this.props.chosenItem.val.hints ? this.props.chosenItem.val.hints : [],
         }
         this.setValue=this.setValue.bind(this);
         this.submitForm=this.submitForm.bind(this);
@@ -48,7 +48,7 @@ export default class QuestionForm extends React.Component {
                         <InputItem className="inputItem" size="big" caption="תשובה" value={this.state.answer} onValueChange={this.setValue}/> 
                         {hints}
                         <button className="btn" onClick={this.submitForm}>{this.props.mode==="del" ? "מחיקת שאלה" : "שמירת שאלה"}</button>
-                        {this.props.mode!="del" && <button className="btn" onClick={this.addHint}>הוסף רמז</button>}
+                        {this.props.mode!=="del" && <button className="btn" onClick={this.addHint}>הוסף רמז</button>}
                         <button className="btn" onClick={this.cancel}>ביטול</button>
                     </fieldset>
                 </form>
