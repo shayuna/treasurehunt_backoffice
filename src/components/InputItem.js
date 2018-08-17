@@ -10,12 +10,12 @@ export default class InputItem extends React.Component {
         return (
             <div className="inputItem">
                 <label className="caption">{this.props.caption}</label>
-                <textarea className="input" type="text" onChange={this.onValueChange} value={this.props.value}></textarea>
+                <textarea className="input" type="text" onChange={this.onValueChange} value={this.props.value} data-index={this.props.index}></textarea>
             </div>
         )
     }
     onValueChange(e){
-        this.props.onValueChange(this.props.caption,e.target.value);
+        this.props.onValueChange(e,this.props.caption,e.target.value);
     }
 
 }

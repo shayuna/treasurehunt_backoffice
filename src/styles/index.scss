@@ -34,3 +34,16 @@ body {
 .inputItem .input{
     height:7em;    
 }
+.listItem{
+    font-size:2em;
+    display:flex;
+    margin:1em;
+    cursor:pointer;
+}
+.listItemIndex{
+    flex-basis:80px;
+    color:red;
+}
+.listItem.marked{
+    background-color:red;
+}
