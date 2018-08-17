@@ -16,5 +16,6 @@
         "eject": "react-scripts eject"
     },
     "main": "index.js",
-    "license": "MIT"
+    "license": "MIT",
+    "homepage": "https://friendly-hugle-e8a97f.netlify.com/"
 }
