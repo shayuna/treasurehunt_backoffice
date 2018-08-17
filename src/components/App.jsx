@@ -3,9 +3,10 @@ import styles from './App.module.scss';
 import Header from "./Header.js";
 import QuestionForm from "./QuestionForm.js";
 import QuestionsList from "./QuestionsList.js";
+/*
 import fire from "../fire.js";
 const database=fire.database();
-
+*/
 class itm {
     constructor(key,val){
         this.key=key;
@@ -27,6 +28,7 @@ export default class App extends Component {
         this.loadData("show");
     }
     loadData(mode){
+  /*
         database.ref("questions").orderByChild("questionNum").once("value",snapshot=>{
             let arItms = [];
             snapshot.forEach(function(child) {
@@ -38,6 +40,7 @@ export default class App extends Component {
                 mode:mode,
             });
         })
+*/
     }
     render() {
 /*
