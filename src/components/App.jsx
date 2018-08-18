@@ -19,50 +19,58 @@ export default class App extends Component {
         this.state = {
             mode:"show",
             arItms:[],
+            arPrologue:[],
+            arEpilogue:[]
         }
         this.setAppState=this.setAppState.bind(this);
         this.getChosenItemData=this.getChosenItemData.bind(this);
    }
     componentDidMount(){
-        this.loadData("show");
+        this.loadData("prologue","arPrologue","screenNum");
+        this.loadData("epilogue","arEpilogue","screenNum");
+        this.loadData("questions","arItms","questionNum","show");
     }
-    loadData(mode){
-        database.ref("questions").orderByChild("questionNum").once("value",snapshot=>{
+    loadData(itemsTypeToLoad,stateArrayName,orderBy,mode){
+        database.ref(itemsTypeToLoad).orderByChild(orderBy).once("value",snapshot=>{
             let arItms = [];
             snapshot.forEach(function(child) {
                 const oItm = new itm(child.key,child.val());
                 arItms.push(oItm);
             });
-            this.setState({
-                arItms:arItms,
-                mode:mode,
-            });
+            this.setState(prevState=>({
+                [stateArrayName]:arItms,
+                mode:mode ? mode : prevState.mode,
+            }));
         })
+        break;
     }
     render() {
-/*
-        return (
-            <div className={styles.app}>
-                <div className="page-content">
-                    <h1>What are you waiting for?</h1>
-                </div>
-  
-            </div>
-        );
-*/
         return (
             <div>
-                {this.state.mode!=="show"  && <QuestionForm setAppState={this.setAppState} mode={this.state.mode} chosenItem={this.getChosenItemData()}/>}
+                {(this.state.mode==="add" || this.state.mode==="update" || this.state.mode==="del")  && <QuestionForm setAppState={this.setAppState} mode={this.state.mode} chosenItem={this.getChosenItemData()}/>}
                 {this.state.mode==="show" && <QuestionsList data={this.state.arItms} setAppState={this.setAppState}/> }
             </div>
         )
     }
     setAppState(mode){
-        if (mode==="show"){
-            this.loadData("show");
-        }
-        else{
-            this.setState({mode});
+        this.loadData("prologue","arPrologue","screenNum","prologue");
+        this.loadData("epilogue","arEpilogue","screenNum","epilogue");
+        this.loadData("questions","arItms","questionNum","show");
+        switch(mode){
+            case "prologue":
+                this.loadData("prologue","arPrologue","screenNum","prologue");
+                break;
+            case "epilogue":
+                this.loadData("epilogue","arEpilogue","screenNum","epilogue");
+                break;
+            case "show":
+                this.loadData("questions","arItms","questionNum","show");
+                break;
+            case "add":
+            case "update":
+            case "del":
+                this.setState({mode});
+                break;
         }
     }
     getChosenItemData(){

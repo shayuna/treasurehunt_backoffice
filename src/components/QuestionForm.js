@@ -9,9 +9,11 @@ export default class QuestionForm extends React.Component {
     constructor(props){
         super(props);
         this.state={
-            questionNum:(this.props.mode==="del" || this.props.mode==="update") && this.props.chosenItem.val ? this.props.chosenItem.val.questionNum : "0",
+            questionNum:(this.props.mode==="del" || this.props.mode==="update") && this.props.chosenItem.val ? this.props.chosenItem.val.questionNum : 0,
             question:(this.props.mode==="del" || this.props.mode==="update") && this.props.chosenItem.val ? this.props.chosenItem.val.question : "",
             answer:(this.props.mode==="del" || this.props.mode==="update") && this.props.chosenItem.val ? this.props.chosenItem.val.answer : "",
+            feedbackAfterCorrectAnswer:(this.props.mode==="del" || this.props.mode==="update") && this.props.chosenItem.val ? this.props.chosenItem.val.feedbackAfterCorrectAnswer : "",
+            feedbackAfterIncorrectAnswer:(this.props.mode==="del" || this.props.mode==="update") && this.props.chosenItem.val ? this.props.chosenItem.val.feedbackAfterIncorrectAnswer : "",
             arHints:(this.props.mode==="del" || this.props.mode==="update") && this.props.chosenItem.val  && this.props.chosenItem.val.hints ? this.props.chosenItem.val.hints : [],
         }
         this.setValue=this.setValue.bind(this);
@@ -46,6 +48,8 @@ export default class QuestionForm extends React.Component {
                         <InputItem className="inputItem" caption="מספר שאלה" value={this.state.questionNum} onValueChange={this.setValue}/> 
                         <InputItem className="inputItem" size="big" caption="שאלה" value={this.state.question} onValueChange={this.setValue}/> 
                         <InputItem className="inputItem" size="big" caption="תשובה" value={this.state.answer} onValueChange={this.setValue}/> 
+                        <InputItem className="inputItem" size="big" caption="משוב לאחר תשובה נכונה" value={this.state.feedbackAfterCorrectAnswer} onValueChange={this.setValue}/> 
+                        <InputItem className="inputItem" size="big" caption="משוב לאחר תשובה לא נכונה" value={this.state.feedbackAfterIncorrectAnswer} onValueChange={this.setValue}/> 
                         {hints}
                         <button className="btn" onClick={this.submitForm}>{this.props.mode==="del" ? "מחיקת שאלה" : "שמירת שאלה"}</button>
                         {this.props.mode!=="del" && <button className="btn" onClick={this.addHint}>הוסף רמז</button>}
@@ -72,6 +76,16 @@ export default class QuestionForm extends React.Component {
                     answer:vl
                 })
                 break;
+            case "משוב לאחר תשובה נכונה":
+                this.setState({
+                    feedbackAfterCorrectAnswer:vl
+                })
+                break;
+            case "משוב לאחר תשובה לא נכונה":
+                this.setState({
+                    feedbackAfterIncorrectAnswer:vl
+                })
+                break;
             case "רמז":
                 const arHints=this.state.arHints.slice();/* don't use the state array, use a copy of the array */
                 arHints[e.target.getAttribute("data-index")]=vl;
@@ -85,11 +99,11 @@ export default class QuestionForm extends React.Component {
         e.preventDefault();
         switch (this.props.mode){
             case "add":
-                database.ref("questions").push({questionNum:this.state.questionNum,question:this.state.question,answer:this.state.answer,hints:this.state.arHints});
+                database.ref("questions").push({questionNum:parseFloat(this.state.questionNum),question:this.state.question,answer:this.state.answer,feedbackAfterCorrectAnswer:this.state.feedbackAfterCorrectAnswer,feedbackAfterIncorrectAnswer:this.state.feedbackAfterIncorrectAnswer,hints:this.state.arHints});
                 alert ("השאלה התווספה בהצלחה");
                 break;
             case "update":
-                database.ref("questions/"+this.props.chosenItem.key).update({questionNum:this.state.questionNum,question:this.state.question,answer:this.state.answer,hints:this.state.arHints});
+                database.ref("questions/"+this.props.chosenItem.key).update({questionNum:parseFloat(this.state.questionNum),question:this.state.question,answer:this.state.answer,feedbackAfterCorrectAnswer:this.state.feedbackAfterCorrectAnswer,feedbackAfterIncorrectAnswer:this.state.feedbackAfterIncorrectAnswer,hints:this.state.arHints});
                 alert ("השאלה נערכה בהצלחה");
                 break;
             case "del":
