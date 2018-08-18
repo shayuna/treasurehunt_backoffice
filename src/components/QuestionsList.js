@@ -8,6 +8,7 @@ export default class QuestionsList extends React.Component {
         this.add=this.add.bind(this);
         this.update=this.update.bind(this);
         this.del=this.del.bind(this);
+        this.homePage=this.homePage.bind(this);
         this.markListItem=this.markListItem.bind(this);
     }
     render(){
@@ -21,6 +22,7 @@ export default class QuestionsList extends React.Component {
                 <button className="btn" onClick={this.add}>הוספת שאלה</button>    
                 <button className="btn" onClick={this.update}>עריכת שאלה</button>    
                 <button className="btn" onClick={this.del}>מחיקת שאלה</button>    
+                <button className="btn" onClick={this.homePage}>חזרה למסך ראשי</button>    
             </div>
         );
     }
@@ -32,6 +34,9 @@ export default class QuestionsList extends React.Component {
     }
     del(){
         this.props.setAppState("del");
+    }
+    homePage(){
+        this.props.setAppState("initial");
     }
     markListItem(e){
         document.querySelectorAll(".marked").forEach((elm,ii)=>{

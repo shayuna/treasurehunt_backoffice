@@ -1,9 +1,12 @@
 import React, { Component } from "react";
-import styles from './App.module.scss';
 import Header from "./Header.js";
-import QuestionForm from "./QuestionForm.js";
-import QuestionsList from "./QuestionsList.js";
+import QuestionForm from "./QuestionForm";
+import QuestionsList from "./QuestionsList";
+import DataCollectionInput from "./DataCollectionInput";
 import fire from "../fire.js";
+import styles from './App.module.scss';
+import "../styles/index.scss";
+
 const database=fire.database();
 
 class itm {
@@ -17,7 +20,7 @@ export default class App extends Component {
     constructor(props){
         super(props);
         this.state = {
-            mode:"show",
+            mode:"initial",
             arItms:[],
             arPrologue:[],
             arEpilogue:[]
@@ -28,7 +31,7 @@ export default class App extends Component {
     componentDidMount(){
         this.loadData("prologue","arPrologue","screenNum");
         this.loadData("epilogue","arEpilogue","screenNum");
-        this.loadData("questions","arItms","questionNum","show");
+        this.loadData("questions","arItms","questionNum","initial");
     }
     loadData(itemsTypeToLoad,stateArrayName,orderBy,mode){
         database.ref(itemsTypeToLoad).orderByChild(orderBy).once("value",snapshot=>{
@@ -42,20 +45,25 @@ export default class App extends Component {
                 mode:mode ? mode : prevState.mode,
             }));
         })
-        break;
     }
     render() {
         return (
             <div>
+                {this.state.mode==="initial" && 
+                    <div>
+                        <button className="btn" onClick={()=>{this.setAppState("prologue")}}>מסכי פרולוג</button>
+                        <button className="btn" onClick={()=>{this.setAppState("show")}}>מסכי שאלות</button>
+                        <button className="btn" onClick={()=>{this.setAppState("epilogue")}}>מסכי אפילוג</button>
+                    </div>
+                }
                 {(this.state.mode==="add" || this.state.mode==="update" || this.state.mode==="del")  && <QuestionForm setAppState={this.setAppState} mode={this.state.mode} chosenItem={this.getChosenItemData()}/>}
                 {this.state.mode==="show" && <QuestionsList data={this.state.arItms} setAppState={this.setAppState}/> }
+                {this.state.mode==="prologue" && <DataCollectionInput inputs={this.state.arPrologue} caption="פרולוג" inputType="prologue" setAppState={this.setAppState}/> }
+                {this.state.mode==="epilogue" && <DataCollectionInput inputs={this.state.arEpilogue} caption="אפילוג" inputType="epilogue" setAppState={this.setAppState}/> }
             </div>
         )
     }
     setAppState(mode){
-        this.loadData("prologue","arPrologue","screenNum","prologue");
-        this.loadData("epilogue","arEpilogue","screenNum","epilogue");
-        this.loadData("questions","arItms","questionNum","show");
         switch(mode){
             case "prologue":
                 this.loadData("prologue","arPrologue","screenNum","prologue");
@@ -66,9 +74,7 @@ export default class App extends Component {
             case "show":
                 this.loadData("questions","arItms","questionNum","show");
                 break;
-            case "add":
-            case "update":
-            case "del":
+            default:
                 this.setState({mode});
                 break;
         }
